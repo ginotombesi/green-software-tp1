@@ -5,6 +5,7 @@ TP1 - Conciencia en el código (Green Software)
 Mide potencia y CO₂eq emitidos por la ejecución de un algoritmo en Python usando CodeCarbon.
 
 Autor: Gino
+Legajo: 95345
 Asignatura: Green Software — Trabajo Práctico Nº1 Segunda alternativa
 País: Argentina (factor de emisión por consigna FE = 0.26 tCO₂/MWh)
 
@@ -33,7 +34,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Dict, Any
 
-# Intentamos importar CodeCarbon y damos un mensaje claro si falta.
+# Intentamos importar CodeCarbon.
 try:
     from codecarbon import OfflineEmissionsTracker  # type: ignore
 except Exception as e:
@@ -49,10 +50,10 @@ except Exception as e:
 # ----------------------------
 # Algoritmo: Criba de Eratóstenes
 # ----------------------------
-def sieve_of_eratosthenes(n: int) -> List[int]:
+def criba_de_eratostenes(n: int) -> List[int]:
     """
     Devuelve todos los primos ≤ n usando la criba de Eratóstenes.
-    Implementación propia (basada en el enfoque clásico, ver referencia MIT en cabecera).
+    Implementación propia (basada en el enfoque clásico, ver referencia MIT mas arriba).
     Complejidad: O(n log log n) tiempo, O(n) memoria.
 
     :param n: cota superior
@@ -75,24 +76,24 @@ def sieve_of_eratosthenes(n: int) -> List[int]:
 # ----------------------------
 @dataclass
 class RunMetrics:
-    duration_s: float
-    cpu_power_W: float
-    gpu_power_W: float
-    ram_power_W: float
+    duracion_s: float
+    poder_CPU_W: float
+    poder_GPU_W: float
+    poder_RAM_W: float
     energia_kWh: float
-    emissions_kg_codecarbon: float
+    emisiones_kg_codecarbon: float
 
     @property
-    def total_power_W(self) -> float:
-        return self.cpu_power_W + self.gpu_power_W + self.ram_power_W
+    def poder_total_W(self) -> float:
+        return self.poder_CPU_W + self.poder_GPU_W + self.poder_RAM_W
 
     @property
-    def avg_power_from_energy_W(self) -> float:
+    def poder_promedio_desde_energia_W(self) -> float:
         # P_prom = Energía / Tiempo
-        # energy_kWh * 1000 => Wh ; duration_s/3600 => h ; => W
-        if self.duration_s <= 0:
+        # energia_kWh * 1000 => Wh ; duracion_s/3600 => h ; => W
+        if self.duracion_s <= 0:
             return float("nan")
-        return (self.energia_kWh * 1000.0) / (self.duration_s / 3600.0)
+        return (self.energia_kWh * 1000.0) / (self.duracion_s / 3600.0)
 
 
 def leer_ultima_fila_de_emision(csv_path: Path) -> Dict[str, Any]:
@@ -124,14 +125,14 @@ def mostrar_reporte(n: int, contador_primos: int, fe_t_por_MWh: float, country_i
     print(f"Algoritmo: Criba de Eratóstenes  |  N = {n:,}  |  Primos encontrados: {contador_primos:,}")
     print(f"País (ISO-3): {country_iso}  |  FE usado: {fe_t_por_MWh:.3f} tCO₂e/MWh  (= {fe_kg_por_kWh:.3f} kgCO₂e/kWh)")
     print("-" * 78)
-    print(f"Duración medida por tracker: {m.duration_s:.3f} s")
+    print(f"Duración medida por tracker: {m.duracion_s:.3f} s")
     print(f"Energía total: {m.energia_kWh:.6f} kWh  ({energia_MWh:.9f} MWh)")
-    print(f"Potencia promedio (CodeCarbon): CPU {m.cpu_power_W:.2f} W | GPU {m.gpu_power_W:.2f} W | RAM {m.ram_power_W:.2f} W | Total {m.total_power_W:.2f} W")
-    print(f"Potencia promedio derivada de energía: {m.avg_power_from_energy_W:.2f} W")
+    print(f"Potencia promedio (CodeCarbon): CPU {m.poder_CPU_W:.2f} W | GPU {m.poder_GPU_W:.2f} W | RAM {m.poder_RAM_W:.2f} W | Total {m.poder_total_W:.2f} W")
+    print(f"Potencia promedio derivada de energía: {m.poder_promedio_desde_energia_W:.2f} W")
     print("-" * 78)
     print(f"FÓRMULA: {formula}")
     print(f"Emisiones con FE fijo Argentina: {emisiones_kg:.6f} kgCO₂e")
-    print(f"Emisiones estimadas por CodeCarbon (para {country_iso}): {m.emissions_kg_codecarbon:.6f} kgCO₂e")
+    print(f"Emisiones estimadas por CodeCarbon (para {country_iso}): {m.emisiones_kg_codecarbon:.6f} kgCO₂e")
     print("-" * 78)
     print("Notas:")
     print("• FE de la consigna (0.26 tCO₂/MWh) equivale a 0.26 kgCO₂/kWh; se aplica a la ENERGÍA.")
@@ -144,7 +145,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="TP1 - Medición de potencia y CO₂eq con CodeCarbon sobre la Criba de Eratóstenes."
     )
-    parser.add_argument("--n", type=int, default=50000000, help="Cota superior para la criba (por defecto: 500000).")
+    parser.add_argument("--n", type=int, default=50000000, help="Cota superior para la criba (por defecto: 50000000).")
     parser.add_argument("--fe", type=float, default=0.26, help="Factor de emisión en tCO₂/MWh (por defecto: 0.26).")
     parser.add_argument("--country", type=str, default="ARG", help="Código ISO-3 del país para CodeCarbon Offline.")
     parser.add_argument("--outdir", type=Path, default=Path("cc_logs"), help="Directorio de salida (CSV de CodeCarbon).")
@@ -168,7 +169,7 @@ def main() -> None:
     # Ejecutamos el algoritmo las veces que se pidió
     primos_totales = 0
     for _ in range(max(1, args.reps)):
-        primes = sieve_of_eratosthenes(args.n)
+        primes = criba_de_eratostenes(args.n)
         primos_totales = len(primes)
     emissions_kg = tracker.stop()
 
@@ -184,12 +185,12 @@ def main() -> None:
     energy_kWh = float(row["energy_consumed"])
 
     metrics = RunMetrics(
-        duration_s=duration_s,
-        cpu_power_W=cpu_power_W,
-        gpu_power_W=gpu_power_W,
-        ram_power_W=ram_power_W,
+        duracion_s=duration_s,
+        poder_CPU_W=cpu_power_W,
+        poder_GPU_W=gpu_power_W,
+        poder_RAM_W=ram_power_W,
         energia_kWh=energy_kWh,
-        emissions_kg_codecarbon=float(emissions_kg),
+        emisiones_kg_codecarbon=float(emissions_kg),
     )
 
     mostrar_reporte(
