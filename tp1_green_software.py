@@ -4,7 +4,7 @@
 TP1 - Conciencia en el código (Green Software)
 Mide potencia y CO₂eq emitidos por la ejecución de un algoritmo en Python usando CodeCarbon.
 
-Autor: Gino
+Alumno: Gino Paolo Tombesi
 Legajo: 95345
 Asignatura: Green Software — Trabajo Práctico Nº1 Segunda alternativa
 País: Argentina (factor de emisión por consigna FE = 0.26 tCO₂/MWh)

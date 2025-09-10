@@ -3,7 +3,7 @@
 ![Foto Utn](./imgs/FRC.png)
 
 ## Portada
-- **Autor:** Gino
+- **Alumno:** Gino Paolo Tombesi
 - **Legajo:** 95345  
 - **Asignatura:** Green Software 4k4 2025 — Trabajo Práctico Nº1 (segunda alternativa)
 - **Profesor:** Ingeniero Franco Mana  
@@ -95,9 +95,45 @@ python tp1_green_software.py --n 10000000 --fe 0.26 --country ARG --interval 2 -
 
 ---
 
-## Conclusión
+## Primera conclusión
 
 La medición muestra un **consumo energético muy pequeño** para una corrida aislada (≈0.000263 kWh), que se traduce en emisiones del orden de **centésimas de gramo de CO₂e** (0.068–0.093 g), convergentes entre el cálculo con **FE fijo** y la **estimación de CodeCarbon**. La ligera diferencia se explica por el **modelo de potencia de fallback** en CPU y por los **factores regionales internos** de la librería en modo offline.
+
+## Compensación por árbol — horas de procesamiento equivalentes
+
+Usando la **duración y las emisiones de la corrida reportada** (duración = **7.616 s**; emisiones por corrida: **FE fijo = 0.000068 kgCO₂e** ; **CodeCarbon = 0.000093 kgCO₂e**).
+
+### Cálculo (fórmula)
+- Duración en horas:  
+  t_h = 7.616 / 3600 = 0.0021156 horas
+- Emisión por hora:  
+  emision_h = emisión por corrida (kg) / tiempo_h
+- Horas compensadas por un árbol (por año):  
+  horas = absorción del árbol (kg/año) / emision_h
+
+### Resultados numéricos
+
+**1) Árbol joven — ~30 kg CO₂/año**
+- Usando **FE fijo (0.000068 kg por corrida)**:  
+  emision_h = 0.000068 kg / 0,002115 h = 0.032142 kg/h (32,142 g/h.)
+
+  Emisión ≈ **0.03214 kg/h** (≈32.14 g/h) → **≈ 933.33 horas** ≈ **38.9 días** ≈ **0.107 años**.
+- Usando **CodeCarbon (0.000093 kg por corrida)**:  
+   emision_h = 0,000093 kg​ / 0,002115 h = 0,043960 kg/h (43,960 g/h)
+
+  Emisión ≈ **0.04396 kg/h** (≈43.96 g/h) → **≈ 682.44 horas** ≈ **28.4 días** ≈ **0.078 años**.
+
+**2) Árbol adulto — ~300 kg CO₂/año**
+- Usando **FE fijo**: **≈ 9333.3 horas** ≈ **389 días** ≈ **1.07 años**.
+- Usando **CodeCarbon**: **≈ 6824.4 horas** ≈ **284.3 días** ≈ **0.78 años**.
+
+## Interpretación de los calculos
+- Un solo **árbol joven (30 kg/año)** compensa aproximadamente **28–39 días** de ejecución continua de este algoritmo al año, según los resultados calculados
+- Un **árbol adulto (300 kg/año)** compensa aproximadamente **0.78–1.07 años** de ejecución continua — es decir, **casi todo un año** de procesamiento continuo en la mayor estimación.
+
+## Conclusion
+- Estas cifras **asumen escala lineal**: se supone que cada hora de procesamiento repite el mismo perfil de consumo medido en la corrida (mismo hardware, mismas condiciones). No se incluyen emisiones embebidas (fabricación de hardware), transporte, ni variaciones de la intensidad de carbono de la red a lo largo del tiempo.  
+- Una corrida aislada de la criba produce fracciones de gramo de CO₂e, pero al escalar a operación continua la huella se vuelve significativa: un único árbol adulto podría compensar aproximadamente un año de ejecución continua de este algoritmo. Por tanto, para reducir impacto real conviene combinar: (a) optimización algorítmica para reducir tiempo de CPU, (b) ejecutar menos repeticiones, y (c) preferir energía con baja intensidad de carbono o comprar bonos de carbono para ejecutar el algoritmo mucho tiempo.
 
 
 ## Licencias y referencias
