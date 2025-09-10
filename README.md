@@ -2,7 +2,6 @@
 
 ![Foto Utn](./imgs/FRC.png)
 
-## Portada
 - **Alumno:** Gino Paolo Tombesi
 - **Legajo:** 95345  
 - **Asignatura:** Green Software 4k4 2025 — Trabajo Práctico Nº1 (segunda alternativa)
